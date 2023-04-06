@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body {
+        margin: 0;
+        padding-bottom: 3rem;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+      }
+
+      #form {
+        background: rgba(0, 0, 0, 0.15);
+        padding: 0.25rem;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        height: 3rem;
+        box-sizing: border-box;
+        backdrop-filter: blur(10px);
+      }
+      #input {
+        border: none;
+        padding: 0 1rem;
+        flex-grow: 1;
+        border-radius: 2rem;
+        margin: 0.25rem;
+      }
+      #input:focus {
+        outline: none;
+      }
+      #form > button {
+        background: #333;
+        border: none;
+        padding: 0 1rem;
+        margin: 0.25rem;
+        border-radius: 3px;
+        outline: none;
+        color: #fff;
+      }
+
+      #messages {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+      }
+      #messages > li {
+        padding: 0.5rem 1rem;
+      }
+      #messages > li:nth-child(odd) {
+        background: #efefef;
+      }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Make connection. This is the client side socket connection to the server
+      // Not specifying a port will default to host that serves the page
+      var socket = io();
+
+      // document.getElementById is a method on the document object
+      // It takes a string argument that is the id of the element you want to get
+      var form = document.getElementById("form");
+      var input = document.getElementById("input");
+
+      // form.addEventListener is a listener for the submit event on the form element (the chat box)
+      // The event listener will call the callback function when the event is triggered
+      form.addEventListener("submit", function (e) {
+        // Prevent the page from reloading
+        e.preventDefault();
+        if (input.value) {
+          // Emit the message to the server
+          socket.emit("chat message", input.value);
+          input.value = "";
+        }
+      });
+
+      socket.on("chat message", function (msg) {
+        var item = document.createElement("li");
+        // .textContent is a property on the li element
+        item.textContent = msg;
+        // Append the message to the messages list
+        // This is the list of messages on the page
+        // messages is the id of the ul element on the page that holds the messages list items (li)
+        messages.appendChild(item);
+        // Scroll to bottom of page
+        // This is a hacky way to do it, but it works
+        // There are better ways to do this
+        // .scrollTo() is a method on the window object
+        // .scrollTo() takes two arguments, the x and y coordinates
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+  </body>
+</html>
