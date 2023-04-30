@@ -1,6 +1,10 @@
 const express = require('express');
+// express is a function that returns an object
+// app is an object that represents the express application
+// app has methods for routing HTTP requests, configuring middleware, rendering HTML views, and registering a template engine
 const app = express();
 const http = require('http');
+// server object is created by calling http.createServer() and passing it the express app as an argument
 const server = http.createServer(app);
 // class Server is a constructor function that takes a server object as an argument
 const { Server } = require('socket.io');
